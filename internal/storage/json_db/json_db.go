@@ -2,17 +2,17 @@ package jsondb
 
 import (
 	"github.com/vladjong/user_grade_api/internal/entity"
-	asynccache "github.com/vladjong/user_grade_api/pkg/async_cache"
+	asyncmap "github.com/vladjong/user_grade_api/pkg/async_map"
 	"github.com/vladjong/user_grade_api/pkg/checker"
 )
 
 type userStorage struct {
-	storage asynccache.Cache
+	storage asyncmap.AsyncMap
 }
 
 func New() *userStorage {
 	return &userStorage{
-		storage: asynccache.NewCache(),
+		storage: asyncmap.NewCache(),
 	}
 }
 

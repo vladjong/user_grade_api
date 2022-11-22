@@ -1,4 +1,4 @@
-package asynccache
+package asyncmap
 
 import (
 	"sync"
@@ -7,31 +7,31 @@ import (
 	"github.com/vladjong/user_grade_api/pkg/hellpers"
 )
 
-type Cache interface {
+type AsyncMap interface {
 	Set(key string, value entity.UserGrade) error
 	Get(key string) (entity.UserGrade, error)
 	Delete(key string) error
 }
 
-type mutexCache struct {
+type mutexMap struct {
 	mx      sync.RWMutex
 	storage map[string]entity.UserGrade
 }
 
-func NewCache() *mutexCache {
-	return &mutexCache{
+func NewCache() *mutexMap {
+	return &mutexMap{
 		storage: make(map[string]entity.UserGrade),
 	}
 }
 
-func (c *mutexCache) Set(key string, value entity.UserGrade) error {
+func (c *mutexMap) Set(key string, value entity.UserGrade) error {
 	c.mx.Lock()
 	defer c.mx.Unlock()
 	c.storage[key] = value
 	return nil
 }
 
-func (c *mutexCache) Get(key string) (entity.UserGrade, error) {
+func (c *mutexMap) Get(key string) (entity.UserGrade, error) {
 	c.mx.RLock()
 	defer c.mx.RUnlock()
 	value, ok := c.storage[key]
@@ -41,7 +41,7 @@ func (c *mutexCache) Get(key string) (entity.UserGrade, error) {
 	return value, nil
 }
 
-func (c *mutexCache) Delete(key string) error {
+func (c *mutexMap) Delete(key string) error {
 	c.mx.Lock()
 	defer c.mx.Unlock()
 	delete(c.storage, key)
