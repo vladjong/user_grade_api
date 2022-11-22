@@ -11,26 +11,42 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	v1 "github.com/vladjong/user_grade_api/internal/controller/http/v1"
+	"github.com/vladjong/user_grade_api/internal/storage"
+	jsondb "github.com/vladjong/user_grade_api/internal/storage/json_db"
 	"github.com/vladjong/user_grade_api/pkg/server"
 )
 
-type App struct {
+type app struct {
+	storage storage.UserStorager
 }
 
-func (a *App) Run() {
+func New() *app {
+	storage := jsondb.New()
+	return &app{
+		storage: storage,
+	}
+}
+
+func (a *app) Run() {
 	var wg sync.WaitGroup
+	routerOne := v1.RouterOne{
+		Storage: a.storage,
+	}
+	routerTwo := v1.RouterTwo{
+		Storage: a.storage,
+	}
 	wg.Add(1)
 	go func() {
-		a.startHTTP(&v1.RouterOne{}, viper.GetString("port_one"), &wg)
+		a.startHTTP(&routerOne, viper.GetString("port_one"), &wg)
 	}()
 	wg.Add(1)
 	go func() {
-		a.startHTTP(&v1.RouterTwo{}, viper.GetString("port_two"), &wg)
+		a.startHTTP(&routerTwo, viper.GetString("port_two"), &wg)
 	}()
 	wg.Wait()
 }
 
-func (a *App) startHTTP(router v1.Router, port string, wg *sync.WaitGroup) {
+func (a *app) startHTTP(router v1.Router, port string, wg *sync.WaitGroup) {
 	defer wg.Done()
 	logrus.Info("HTTP server initializing")
 	server := new(server.Server)

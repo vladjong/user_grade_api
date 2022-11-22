@@ -4,9 +4,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/vladjong/user_grade_api/internal/storage"
 )
 
 type RouterTwo struct {
+	Storage storage.UserStorager
 }
 
 func (r *RouterTwo) NewRouter(handler *gin.Engine) {
@@ -17,6 +19,6 @@ func (r *RouterTwo) NewRouter(handler *gin.Engine) {
 
 	api := handler.Group("/v1")
 	{
-		api.GET("/:id", r.SetUser)
+		api.POST("/", r.SetUser)
 	}
 }

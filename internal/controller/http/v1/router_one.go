@@ -4,9 +4,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/vladjong/user_grade_api/internal/storage"
 )
 
 type RouterOne struct {
+	Storage storage.UserStorager
 }
 
 func (r *RouterOne) NewRouter(handler *gin.Engine) {

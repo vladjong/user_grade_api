@@ -11,6 +11,6 @@ func main() {
 	if err := config.InitConfig(); err != nil {
 		logrus.Fatalf("error initializing config: %s", err.Error())
 	}
-	app := app.App{}
+	app := app.New()
 	app.Run()
 }
