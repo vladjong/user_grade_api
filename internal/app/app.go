@@ -13,6 +13,7 @@ import (
 	v1 "github.com/vladjong/user_grade_api/internal/controller/http/v1"
 	"github.com/vladjong/user_grade_api/internal/storage"
 	jsondb "github.com/vladjong/user_grade_api/internal/storage/json_db"
+	"github.com/vladjong/user_grade_api/pkg/fileworker"
 	"github.com/vladjong/user_grade_api/pkg/kafka/consumer"
 	"github.com/vladjong/user_grade_api/pkg/kafka/producer"
 	"github.com/vladjong/user_grade_api/pkg/server"
@@ -43,12 +44,14 @@ func New() *app {
 func (a *app) Run() {
 	var wg sync.WaitGroup
 	routerOne := v1.RouterOne{
-		Storage: a.storage,
+		Storage:      a.storage,
+		FileWorkerer: &fileworker.WorkerCsv{},
 	}
 	routerTwo := v1.RouterTwo{
-		Storage:  a.storage,
-		Producer: a.producer,
-		Consumer: a.consumer,
+		Storage:      a.storage,
+		Producer:     a.producer,
+		Consumer:     a.consumer,
+		FileWorkerer: &fileworker.WorkerCsv{},
 	}
 	wg.Add(1)
 	go func() {

@@ -6,10 +6,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/vladjong/user_grade_api/internal/storage"
+	"github.com/vladjong/user_grade_api/pkg/fileworker"
 )
 
 type RouterOne struct {
-	Storage storage.UserStorager
+	Storage      storage.UserStorager
+	FileWorkerer fileworker.FileWorkerer
 }
 
 func (r *RouterOne) NewRouter(handler *gin.Engine) {

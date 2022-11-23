@@ -12,14 +12,16 @@ import (
 	"github.com/spf13/viper"
 	"github.com/vladjong/user_grade_api/internal/entity"
 	"github.com/vladjong/user_grade_api/internal/storage"
+	"github.com/vladjong/user_grade_api/pkg/fileworker"
 	"github.com/vladjong/user_grade_api/pkg/kafka/consumer"
 	"github.com/vladjong/user_grade_api/pkg/kafka/producer"
 )
 
 type RouterTwo struct {
-	Storage  storage.UserStorager
-	Producer producer.Producer
-	Consumer consumer.Consumer
+	Storage      storage.UserStorager
+	Producer     producer.Producer
+	Consumer     consumer.Consumer
+	FileWorkerer fileworker.FileWorkerer
 }
 
 func (r *RouterTwo) NewRouter(handler *gin.Engine) {
