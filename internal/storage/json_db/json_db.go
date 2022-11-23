@@ -33,3 +33,14 @@ func (s *userStorage) GetUser(id string) (user entity.UserGrade, err error) {
 	user = value.(entity.UserGrade)
 	return user, nil
 }
+
+func (s *userStorage) GetBackup() (users []entity.UserGrade, err error) {
+	values, err := s.storage.GetAll()
+	if err != nil {
+		return users, err
+	}
+	for _, value := range values {
+		users = append(users, value.(entity.UserGrade))
+	}
+	return users, nil
+}

@@ -31,7 +31,6 @@ func (r *RouterTwo) NewRouter(handler *gin.Engine) {
 	api := handler.Group("/api", basicAuth)
 	{
 		api.POST("/", r.setUser)
-		api.GET("/backup", r.getBackup)
 	}
 
 	go func() {
@@ -60,22 +59,6 @@ func (r *RouterTwo) setUser(c *gin.Context) {
 		return
 	}
 	r.Producer.SendMessage(inputUser)
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"Status": "Ok",
-	})
-}
-
-func (r *RouterTwo) getBackup(c *gin.Context) {
-	// var inputUser entity.UserGrade
-	// if err := c.BindJSON(&inputUser); err != nil {
-	// 	ErrorResponse(c, http.StatusBadRequest, err.Error())
-	// 	return
-	// }
-	// if _, err := strconv.Atoi(inputUser.UserId); err != nil {
-	// 	ErrorResponse(c, http.StatusBadRequest, err.Error())
-	// 	return
-	// }
-	// r.Producer.SendMessage(inputUser)
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"Status": "Ok",
 	})

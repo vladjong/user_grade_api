@@ -21,6 +21,7 @@ func (r *RouterOne) NewRouter(handler *gin.Engine) {
 	api := handler.Group("/api")
 	{
 		api.GET("/:id", r.getUser)
+		api.GET("/backup", r.getBackup)
 	}
 }
 

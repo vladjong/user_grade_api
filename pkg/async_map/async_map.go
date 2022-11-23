@@ -9,6 +9,7 @@ import (
 type AsyncMap interface {
 	Set(key string, value interface{}) error
 	Get(key string) (value interface{}, err error)
+	GetAll() (value []interface{}, err error)
 	Delete(key string) error
 }
 
@@ -45,4 +46,13 @@ func (c *mutexMap) Delete(key string) error {
 	defer c.mx.Unlock()
 	delete(c.storage, key)
 	return nil
+}
+
+func (c *mutexMap) GetAll() (values []interface{}, err error) {
+	c.mx.RLock()
+	defer c.mx.RUnlock()
+	for _, value := range c.storage {
+		values = append(values, value)
+	}
+	return values, nil
 }
