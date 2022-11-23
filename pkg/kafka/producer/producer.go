@@ -18,12 +18,6 @@ type Producer struct {
 	producer sarama.AsyncProducer
 }
 
-// убрать в конфиг
-var (
-	KafkaTopic  = "example-topic"
-	BrokersList = []string{"localhost:9092"}
-)
-
 func New(options *ProducerOptions) (producer Producer, err error) {
 	config := sarama.NewConfig()
 	config.Version = sarama.V2_5_0_0
@@ -49,14 +43,13 @@ func (p *Producer) SendMessage(user entity.UserGrade) error {
 		return err
 	}
 	msg := sarama.ProducerMessage{
-		Topic: KafkaTopic,
+		Topic: p.options.KafkaTopic,
 		Key:   sarama.StringEncoder(user.UserId),
 		Value: sarama.ByteEncoder(msgBytes),
 	}
 	p.producer.Input() <- &msg
 	successMsg := <-p.producer.Successes()
 	logrus.Println("Succesful to write message, offset:", successMsg.Offset)
-	// err = p.producer.Close()
 	if err != nil {
 		return err
 	}
