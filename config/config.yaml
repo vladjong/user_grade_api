@@ -1,2 +1,7 @@
 port_one: :3333
+
 port_two: :1111
+
+kafka_topic: example-topic
+
+brokers_list: localhost:9092

@@ -1,7 +1,6 @@
 package jsondb
 
 import (
-	"github.com/sirupsen/logrus"
 	"github.com/vladjong/user_grade_api/internal/entity"
 	asyncmap "github.com/vladjong/user_grade_api/pkg/async_map"
 	"github.com/vladjong/user_grade_api/pkg/checker"
@@ -23,8 +22,6 @@ func (s *userStorage) SetUser(user entity.UserGrade) error {
 		newUser := checker.NewBuilderUserGrade(user, originalUser)
 		return s.storage.Set(newUser.UserId, newUser)
 	}
-	logrus.Info("vlad1")
-
 	return s.storage.Set(user.UserId, user)
 }
 

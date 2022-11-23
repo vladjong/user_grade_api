@@ -7,10 +7,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/vladjong/user_grade_api/internal/entity"
 	"github.com/vladjong/user_grade_api/internal/storage"
+	"github.com/vladjong/user_grade_api/pkg/kafka/producer"
 )
 
 type RouterTwo struct {
-	Storage storage.UserStorager
+	Storage  storage.UserStorager
+	Producer producer.Producer
 }
 
 func (r *RouterTwo) NewRouter(handler *gin.Engine) {
@@ -39,6 +41,7 @@ func (r *RouterTwo) setUser(c *gin.Context) {
 		ErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
+	r.Producer.SendMessage(inputUser)
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"Status": "Ok",
 	})
