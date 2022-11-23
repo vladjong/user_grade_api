@@ -3,40 +3,39 @@ package asyncmap
 import (
 	"sync"
 
-	"github.com/vladjong/user_grade_api/internal/entity"
 	"github.com/vladjong/user_grade_api/pkg/hellpers"
 )
 
 type AsyncMap interface {
-	Set(key string, value entity.UserGrade) error
-	Get(key string) (entity.UserGrade, error)
+	Set(key string, value interface{}) error
+	Get(key string) (value interface{}, err error)
 	Delete(key string) error
 }
 
 type mutexMap struct {
 	mx      sync.RWMutex
-	storage map[string]entity.UserGrade
+	storage map[string]interface{}
 }
 
 func NewCache() *mutexMap {
 	return &mutexMap{
-		storage: make(map[string]entity.UserGrade),
+		storage: make(map[string]interface{}),
 	}
 }
 
-func (c *mutexMap) Set(key string, value entity.UserGrade) error {
+func (c *mutexMap) Set(key string, value interface{}) error {
 	c.mx.Lock()
 	defer c.mx.Unlock()
 	c.storage[key] = value
 	return nil
 }
 
-func (c *mutexMap) Get(key string) (entity.UserGrade, error) {
+func (c *mutexMap) Get(key string) (value interface{}, err error) {
 	c.mx.RLock()
 	defer c.mx.RUnlock()
 	value, ok := c.storage[key]
 	if !ok {
-		return value, hellpers.ErrNotFound
+		return "", hellpers.ErrNotFound
 	}
 	return value, nil
 }
