@@ -70,7 +70,7 @@ func (a *app) startHTTP(router v1.Router, port string, wg *sync.WaitGroup) {
 	defer wg.Done()
 	logrus.Info("HTTP server initializing")
 	server := new(server.Server)
-	handler := gin.Default()
+	handler := gin.New()
 	router.NewRouter(handler)
 	go func() {
 		if err := server.Run(port, handler); err != nil {

@@ -44,3 +44,12 @@ func (s *userStorage) GetBackup() (users []entity.UserGrade, err error) {
 	}
 	return users, nil
 }
+
+func (s *userStorage) SetBackup(users []entity.UserGrade) error {
+	for _, user := range users {
+		if err := s.SetUser(user); err != nil {
+			return err
+		}
+	}
+	return nil
+}

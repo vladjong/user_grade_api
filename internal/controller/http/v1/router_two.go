@@ -5,12 +5,11 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strconv"
+	"sync"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"github.com/vladjong/user_grade_api/internal/entity"
 	"github.com/vladjong/user_grade_api/internal/storage"
 	"github.com/vladjong/user_grade_api/pkg/fileworker"
 	"github.com/vladjong/user_grade_api/pkg/kafka/consumer"
@@ -30,10 +29,17 @@ func (r *RouterTwo) NewRouter(handler *gin.Engine) {
 
 	handler.GET("/healthz", func(c *gin.Context) { c.Status(http.StatusOK) })
 
-	api := handler.Group("/api", basicAuth)
+	api := handler.Group("/api")
 	{
-		api.POST("/", r.setUser)
+		api.POST("/", basicAuth, r.setUser)
 	}
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		r.readBackup(&wg)
+	}()
+	wg.Wait()
 
 	go func() {
 		ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
@@ -48,20 +54,4 @@ func (r *RouterTwo) NewRouter(handler *gin.Engine) {
 		}
 		<-ctx.Done()
 	}()
-}
-
-func (r *RouterTwo) setUser(c *gin.Context) {
-	var inputUser entity.UserGrade
-	if err := c.BindJSON(&inputUser); err != nil {
-		ErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-	if _, err := strconv.Atoi(inputUser.UserId); err != nil {
-		ErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-	r.Producer.SendMessage(inputUser)
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"Status": "Ok",
-	})
 }

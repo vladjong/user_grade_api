@@ -6,4 +6,5 @@ type UserStorager interface {
 	SetUser(user entity.UserGrade) error
 	GetUser(id string) (entity.UserGrade, error)
 	GetBackup() (users []entity.UserGrade, err error)
+	SetBackup(users []entity.UserGrade) error
 }

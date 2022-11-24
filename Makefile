@@ -17,6 +17,7 @@ $(APP_BIN):
 
 clean:
 	rm -rf build || true
+	rm -rf bin || true
 
 lint: install-lint
 	${LINTBIN} run
@@ -28,3 +29,6 @@ install-lint: bindir
 	test -f ${LINTBIN} || \
 		(GOBIN=${BINDIR} go install github.com/golangci/golangci-lint/cmd/golangci-lint@${LINTVER} && \
 		mv ${BINDIR}/golangci-lint ${LINTBIN})
+
+kafka:
+	docker compose up --build

@@ -10,7 +10,9 @@
 ## Стек
 
 - `Go`
+- `Docker`
 - Фреймворк [Gin](https://github.com/gin-gonic/gin)
+- Брокер сообщения [Kafka Sarama](https://github.com/Shopify/sarama)
 - Конфигурация приложения [viper](https://github.com/spf13/viper)
 - Логер [logrus](https://github.com/sirupsen/logrus)
 
@@ -20,8 +22,8 @@
 - [x] Метод set
 - [x] Basic auth (middleware)
 - [x] Функционал добавления данных частями в методе set
-- [ ] Брокер сообщения
-- [ ] Метод `/backup`
+- [x] Брокер сообщения
+- [x] Метод `/backup`
 
 ## Запуск
 
@@ -31,12 +33,21 @@
 git clone https://github.com/vladjong/user_grade_api
 ```
 
-2. Открыть терминал и набрать:
+2. Включить докер
+
+3. Открыть терминал и набрать:
+```
+make kafka
+```
+Запускает докер контейнер kafka
+
+4. Открыть терминал и набрать:
 ```
 make
 ```
+Запускает сервис
 
-3. Проверка на стиль
+5. Проверка на стиль
 
 ```
 make lint
@@ -92,6 +103,15 @@ curl -X 'GET' \
   -H 'accept: application/json'
 ```
 
+- `/backup` Метод для сохранения данных на локальный компьютер
+
+Curl:
+```
+curl -X 'GET' \
+  'http://localhost:3333/backup' \
+  -H 'accept: application/json'
+```
+
 ### Pkg
 
 #### Async_map
@@ -102,3 +122,6 @@ curl -X 'GET' \
 
 Пакет, который проверяет структуру пользователя и отдает корректную структуру
 
+#### Kafka `:9092`
+
+Пакет, который позволяет работать с брокер сообщениями

@@ -68,7 +68,9 @@ func (c *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim saram
 		if err := json.Unmarshal(message.Value, &request); err != nil {
 			return err
 		}
-		c.Storage.SetUser(request)
+		if err := c.Storage.SetUser(request); err != nil {
+			return err
+		}
 		session.MarkMessage(message, "")
 	}
 	return nil
